@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Any, Dict, List, Tuple
 import requests
 
 # initial attributes - we can widdle down to just the essentials as necessary
@@ -10,7 +10,7 @@ WEATHER_ATTRIBUTES = [
 NWS_URL = "https://api.weather.gov/points"
 
 
-def call_nws(lat_lon: Tuple[float, float], is_hourly: bool = False) -> dict:
+def call_nws(lat_lon: Tuple[float, float], is_hourly: bool = False) -> Dict[Tuple[float, float], List[Dict[str, Any]]]:
     url = f"{NWS_URL}/{lat_lon[0]},{lat_lon[1]}"
     response = requests.get(url)
     if is_hourly:
@@ -24,7 +24,3 @@ def call_nws(lat_lon: Tuple[float, float], is_hourly: bool = False) -> dict:
     n_units = n_units or len(sub_response.json()["properties"]["periods"])
     forecast = [{k: sub_response.json()["properties"]["periods"][unit_from_now][k] for k in WEATHER_ATTRIBUTES} for unit_from_now in range(n_units)]
     return {lat_lon: forecast}
-
-print(call_nws((47.4867, -121.7535)))
-
-
