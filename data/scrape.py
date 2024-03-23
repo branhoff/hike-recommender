@@ -1,35 +1,51 @@
-import urllib.parse
-import time
-import requests
-import json
-
-state = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado",
-  "Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois",
-  "Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland",
-  "Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana",
-  "Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York",
-  "North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania",
-  "Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah",
-  "Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]
-
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from bs4 import BeautifulSoup
+from pymongo import MongoClient
+import time
 
-# scraping the site 
-def get_all_hikes(browser):
-    for st in state:
-        browser.get(f'https://www.alltrails.com/us/{state}')
-        while True:
-            try:
-                load_hikes = WebDriverWait(browser, 20).until(EC.visibility_of_element_located((By.XPATH,"//div[@id='load_more'] [@class='feed-item load-more trail-load'][//a]")))
-                load_more_hikes.click()
-                time.sleep(7)
-            except:
-                break
-        soup = BeautifulSoup(browser.page_source)
-        return soup
+def login(driver):
+    driver.get('https://www.alltrails.com/login?ref=header')
+    driver.find_element_by_id('user_email').send_keys('coolavidhiker@gmail.com')
+    driver.find_element_by_id('user_password').send_keys('live<3hike')
+    login=driver.find_element_by_class_name('login')
+    login.click()
+    # driver.find_element_by_name("commit").click()
+    # driver.find_element_by_id("search").send_keys('Milton')
+    # driver.find_element_by_id("search").send_keys('Quebec')
+    # driver.find_element_by_id("search").send_keys('Ontario')
+    # soup, driver = get_all_hikes(driver)
+    # return soup, driver
 
+def get_all_hikes(driver):
+    driver.get('https://www.alltrails.com/canada/ontario?ref=search')
+    # driver.get('https://www.alltrails.com/canada/ontario/milton?ref=search')
+    # driver.get('https://www.alltrails.com/canada/quebec?ref=search')
+    while True:
+        try:
+            load_more_hikes = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH,"//div[@id='load_more'] [@class='feed-item load-more trail-load'][//a]")))
+            load_more_hikes.click()
+            time.sleep(7)
+        except:
+            break
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    return soup
 
-# scraping the details
+def get_all_ratings(driver, hike_url):
+    driver.get(hike_url)
+    while True:
+        try:
+            load_more_ratings = WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.XPATH,"//div[@id='load_more'] [@class='feed-item load-more'][//a]")))
+            load_more_ratings.click()
+            time.sleep(7)
+        except:
+            break
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    return soup
+
 def parse_meta_data(hike_soup):
     header = hike_soup.find('div', id='title-and-menu-box')
     hike_name = header.findChild('h1').text
@@ -58,7 +74,17 @@ def parse_meta_data(hike_soup):
     hike_attributes = []
     for tag in tags:
         hike_attributes.append(tag.text)
+
+    # map_img = hike_soup.find_element_by_id('sidebar-map')
+    # print (map_img.get_attribute('src'))
+
+    ## Get location information
+    # location=hike_soup.find_element_by_id('')
+    # latitude=hike_soup.
+
     user_ratings = []
+    user_reviews=[]
+    reviews_array=[]
     users = hike_soup.select('div.feed-user-content.rounded')
     for user in users:
         if user.find('span', itemprop='author') != None:
@@ -67,6 +93,15 @@ def parse_meta_data(hike_soup):
             try:
                 rating = user.find('span', itemprop="reviewRating").findChildren('meta')[0]['content']
                 user_ratings.append({user_name: rating})
+                # review = ((user.find('p', itemprop='reviewBody').text).encode('ascii').decode('ascii'))
+                # review = (user.find('p', itemprop='reviewBody').text).encode('utf-8')
+                review = user.find('p', itemprop='reviewBody').text
+                if (review != None):
+                    user_reviews.append({user_name: review})
+                    reviews_ratings.append({user_name: review})
+                else:
+                    user_reviews.append({user_name: None})
+                # print (">>", user_review)
             except:
                 pass
     row_data = {}
@@ -80,8 +115,31 @@ def parse_meta_data(hike_soup):
     row_data['route_type'] = route_type
     row_data['hike_attributes'] = hike_attributes
     row_data['ratings'] = user_ratings
+    row_data['reviews'] = user_reviews
+    # print (row_data)
     return row_data
 
-browser = webdriver.Chrome()
-soup = get_all_hikes(browser)
-create_db(soup, browser)
+def create_db(soup, driver):
+    hikes = soup.select('div.trail-result-card')
+    for hike in hikes:
+        h = hike.findChild('a')
+        if h == None:
+            continue
+        hike_url = 'http://www.alltrails.com' + h['href']
+        hike_soup = get_all_ratings(driver, hike_url)
+        mongo_doc = parse_meta_data(hike_soup)
+        table.insert_one(mongo_doc)
+
+
+if __name__ == '__main__':
+    client = MongoClient()
+    # db = client['quebec_db']
+    db = client['./data/Ontario_allreviews.db']
+    # db = client['Milton_reviewsdb']
+    # db = client['Quebec_reviewsdb']
+    table = db['hikes']
+
+    driver = webdriver.Chrome()
+    login(driver)
+    soup = get_all_hikes(driver)
+    create_db(soup, driver)

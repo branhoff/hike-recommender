@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Form</title>
+</head>
+<body>
+    <h2>Enter Details</h2>
+    <form action="/submit-form" method="post">
+        <label for="date">Date:</label><br>
+        <input type="date" id="date" name="date"><br><br>
+
+        <label for="maxDriveTime">Max Drive Time:</label><br>
+        <input type="number" id="maxDriveTime" name="maxDriveTime"><br><br>
+
+        <label for="startLocation">Start Location:</label><br>
+        <input type="text" id="startLocation" name="startLocation"><br><br>
+
+        <label for="promptField">Prompt Field:</label><br>
+        <textarea id="promptField" name="promptField" rows="4" cols="50"></textarea><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

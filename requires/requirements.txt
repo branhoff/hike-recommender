@@ -5,5 +5,8 @@ sentence-transformers
 tiktoken
 octoai-sdk
 flask
+flask-cors
 requests
 pandas
+osmnx
+networkx
