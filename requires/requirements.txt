@@ -10,3 +10,8 @@ requests
 pandas
 osmnx
 networkx
+openai
+faiss-cpu
+langchain
+langchain-community
+langchain-openai

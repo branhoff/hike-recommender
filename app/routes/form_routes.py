@@ -1,4 +1,5 @@
 import json
+from app.util.temp import trail_recommendation
 from flask import Blueprint, request, render_template, Response, jsonify
 
 from app.services import chat_gpt_service
@@ -51,6 +52,7 @@ def handle_data():
         """
 
     try:
+        print(trail_recommendation(date, max_drive_time, start_location, prompt_field, difficulty, min_length, max_length, max_elevation_gain))
         response = chat_gpt_service.prompt_chat_gpt(prompt)
         hikes_response = json.loads(
             response["choices"][0]["message"]["content"])
