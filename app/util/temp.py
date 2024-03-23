@@ -5,46 +5,6 @@ from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.schema import SystemMessage
 
-
-embeddings =OpenAIEmbeddings()
-
-# Load FAISS embeddings (OpenAI based)
-
-wa_trail= FAISS.load_local("vectordb", embeddings)
-wa_trail = wa_trail.as_retriever()
-
-
-tool1 = create_retriever_tool(
-    wa_trail,
-    "search_trails_nearby",
-    "provides information about best recommended trails")
-
-
-tools_trail = [tool1]
-
-# llm chat model
-llm = ChatOpenAI(temperature=0.3, model="gpt-3.5-turbo-0613")
-# ChatOpenAI(temperature=0.3)
-
-
-
-system_message_step1 = SystemMessage(
-    content='''
-    YOU ARE AN HIKE SUGGESTION EXPERT:
-    BASED ON THE GIVEN DATES, WEATHER, AND ESTIMATED DRIVE TIME, PLEASE SUGGEST SOME BEST HIKES/TRAILS.
-    """
-    '''
-)
-
-agent_executor = create_conversational_retrieval_agent(
-    llm=llm,
-    tools=tools_trail,
-    system_message=system_message_step1,
-    remember_intermediate_steps=True,
-    verbose=True,
-    max_token_limit=3900
-)
-
 def load_requirements():
   embeddings = OpenAIEmbeddings()
 
