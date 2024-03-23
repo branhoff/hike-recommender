@@ -7,3 +7,5 @@ octoai-sdk
 flask
 flask-cors
 requests
+osmnx
+networkx
