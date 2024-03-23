@@ -4,3 +4,4 @@ langchain
 sentence-transformers
 tiktoken
 octoai-sdk
+flask
