@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, request, render_template, Response, jsonify
 
 from app.services import chat_gpt_service
@@ -44,7 +45,9 @@ def handle_data():
 
     try:
         response = chat_gpt_service.prompt_chat_gpt(prompt)
-        return render_template("response.html", response=response["choices"][0]["message"]["content"])
+        hikes_response = json.loads(
+            response["choices"][0]["message"]["content"])
+        return render_template("response.html", hikes_response=hikes_response)
 
     except Exception as e:
         print(f"Error: {e}")
