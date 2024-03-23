@@ -17,7 +17,23 @@
         <label for="startLocation">Start Location:</label><br>
         <input type="text" id="startLocation" name="startLocation"><br><br>
 
-        <label for="promptField">Prompt Field:</label><br>
+        <label for="difficulty">Difficulty:</label><br>
+        <select id="difficulty" name="difficulty">
+            <option value="EASY">Easy</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HARD">Hard</option>
+        </select><br><br>
+
+        <label for="minLength">Minimum Length of Hike (miles):</label><br>
+        <input type="number" id="minLength" name="minLength"><br><br>
+
+        <label for="maxLength">Maximum Length of Hike (miles):</label><br>
+        <input type="number" id="maxLength" name="maxLength"><br><br>
+
+        <label for="maxElevationGain">Maximum Elevation Gain (feet):</label><br>
+        <input type="number" id="maxElevationGain" name="maxElevationGain"><br><br>
+
+        <label for="promptField">Additional Preferences:</label><br>
         <textarea id="promptField" name="promptField" rows="4" cols="50"></textarea><br><br>
 
         <input type="submit" value="Submit">
