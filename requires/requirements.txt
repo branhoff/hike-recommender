@@ -6,3 +6,5 @@ tiktoken
 octoai-sdk
 flask
 requests
+osmnx
+networkx
