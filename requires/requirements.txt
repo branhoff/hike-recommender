@@ -6,3 +6,4 @@ tiktoken
 octoai-sdk
 flask
 flask-cors
+requests
