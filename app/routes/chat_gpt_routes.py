@@ -6,11 +6,10 @@ It includes routes to handle API requests to interact with the ChatGPT service.
 
 from typing import Optional, Dict, Any, Tuple
 
-from flask import Blueprint, request, jsonify, Response
+from flask import Blueprint, request, jsonify, Response, render_template
 from app.services import chat_gpt_service
 
 chatgpt_bp = Blueprint("chatgpt_routes", __name__)
-
 
 @chatgpt_bp.route("/api/chat_gpt/prompt/", methods=["POST"])
 def prompt_chat_gpt() -> Tuple[Response, int]:
@@ -38,4 +37,4 @@ def prompt_chat_gpt() -> Tuple[Response, int]:
         return jsonify({"error": "Missing field: message_content"}), 400
 
     response = chat_gpt_service.prompt_chat_gpt(message_content, model)
-    return jsonify(response), 200
+    print(response)

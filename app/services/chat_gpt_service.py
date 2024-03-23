@@ -46,7 +46,7 @@ def prompt_chat_gpt(message_content: str, model: str = "gpt-3.5-turbo") -> dict:
 
     try:
         response = requests.post(
-            url, headers=headers, data=json.dumps(data), verify=False, timeout=15
+            url, headers=headers, data=json.dumps(data), timeout=15
         )
         response.raise_for_status()
         return response.json()
