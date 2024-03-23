@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Chat GPT Response</title>
+    <style>
+        .hike { margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .hike-metadata { margin-top: 5px; }
+    </style>
 </head>
 <body>
-    <h3>Response from Chat GPT:</h3>
-    <p>{{ response }}</p>
+    <h3>Recommended Hikes:</h3>
+    {% for hike in hikes_response.hikes %}
+    <div class="hike">
+        <h4>{{ hike.name }}</h4>
+        <div class="hike-metadata">
+            Difficulty: {{ hike.metadata.difficulty }}<br>
+            Duration: {{ hike.metadata.duration }}<br>
+            Features: {{ hike.metadata.features | join(", ") }}
+        </div>
+    </div>
+    {% endfor %}
     <a href="/">Back to Form</a>
 </body>
 </html>

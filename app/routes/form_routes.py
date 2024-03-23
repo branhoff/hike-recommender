@@ -1,5 +1,5 @@
-from flask import Blueprint, redirect, request, render_template, Response, \
-    url_for, jsonify
+import json
+from flask import Blueprint, request, render_template, Response, jsonify
 
 from app.services import chat_gpt_service
 
@@ -19,12 +19,35 @@ def handle_data():
     prompt_field = request.form['promptField']
 
     prompt = f"""
-    On {date}, I'm looking for a hiking adventure. I can drive up to {max_drive_time} hours from {start_location}. Considering my constraints and the following specifics: {prompt_field}, can you recommend the best possible hike that meets my criteria? Please provide details about the hike, including the trail name, location, expected conditions, and why it's a great match for my request.
+    Considering the following criteria:
+    - Date: {date}
+    - Maximum Drive Time from Start Location: {max_drive_time} hours
+    - Start Location: {start_location}
+    - Additional Preferences: {prompt_field}
+
+    Please provide a list of the best possible hikes that meet these criteria, formatted as JSON. Each hike should include its name and relevant metadata such as difficulty level, estimated duration, and key features. The response should look something like this example:
+
+    {{
+        "hikes": [
+            {{
+                "name": "Example Hike Name",
+                "metadata": {{
+                    "difficulty": "Moderate",
+                    "duration": "4 hours",
+                    "features": ["waterfall", "forest views"]
+                }}
+            }}
+        ]
+    }}
+
+    Generate a list based on the criteria provided.
     """
 
     try:
         response = chat_gpt_service.prompt_chat_gpt(prompt)
-        return render_template("response.html", response=response["choices"][0]["message"]["content"])
+        hikes_response = json.loads(
+            response["choices"][0]["message"]["content"])
+        return render_template("response.html", hikes_response=hikes_response)
 
     except Exception as e:
         print(f"Error: {e}")
