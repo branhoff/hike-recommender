@@ -17,31 +17,38 @@ def handle_data():
     max_drive_time = request.form['maxDriveTime']
     start_location = request.form['startLocation']
     prompt_field = request.form['promptField']
+    difficulty = request.form['difficulty']
+    min_length = request.form['minLength']
+    max_length = request.form['maxLength']
+    max_elevation_gain = request.form['maxElevationGain']
 
     prompt = f"""
-    Considering the following criteria:
-    - Date: {date}
-    - Maximum Drive Time from Start Location: {max_drive_time} hours
-    - Start Location: {start_location}
-    - Additional Preferences: {prompt_field}
+        Considering the following criteria:
+        - Date: {date}
+        - Maximum Drive Time from Start Location: {max_drive_time} hours
+        - Start Location: {start_location}
+        - Difficulty: {difficulty}
+        - Length of Hike: {min_length} to {max_length} miles
+        - Maximum Elevation Gain: {max_elevation_gain} feet
+        - Additional Preferences: {prompt_field}
 
-    Please provide a list of the best possible hikes that meet these criteria, formatted as JSON. Each hike should include its name and relevant metadata such as difficulty level, estimated duration, and key features. The response should look something like this example:
+        Please provide a list of the best possible hikes that meet these criteria, formatted as JSON. Each hike should include its name and relevant metadata. The response should be structured as follows:
 
-    {{
-        "hikes": [
-            {{
-                "name": "Example Hike Name",
-                "metadata": {{
-                    "difficulty": "Moderate",
-                    "duration": "4 hours",
-                    "features": ["waterfall", "forest views"]
+        {{
+            "hikes": [
+                {{
+                    "name": "Example Hike Name",
+                    "metadata": {{
+                        "difficulty": "Moderate",
+                        "duration": "4 hours",
+                        "features": ["waterfall", "forest views"]
+                    }}
                 }}
-            }}
-        ]
-    }}
+            ]
+        }}
 
-    Generate a list based on the criteria provided.
-    """
+        Generate a list based on the criteria provided.
+        """
 
     try:
         response = chat_gpt_service.prompt_chat_gpt(prompt)
