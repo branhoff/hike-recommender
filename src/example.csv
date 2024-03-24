@@ -1,0 +1,6 @@
+trail_id,name,state_name,_geoloc,popularity,length,elevation_gain,difficulty_rating,route_type,length_miles
+10007491,Tolmie Peak Trail,Washington,"{'lat': 46.93736, 'lng': -121.8677}",49.5524,8851.37,463.9056,3,out and back,5.500000000000001
+10023187,Skyline Trail,Washington,"{'lat': 46.78647, 'lng': -121.73641}",45.1568,8529.502,535.8384,3,loop,5.300000000000001
+10032304,Hurricane Hill via Hurricane Ridge,Washington,"{'lat': 47.97651, 'lng': -123.5178}",42.0778,4988.954,242.9256,3,out and back,3.1
+10004045,Comet and Christine Falls,Washington,"{'lat': 46.77868, 'lng': -121.7839}",33.916,6920.162,610.8192,3,out and back,4.300000000000001
+10003564,Naches Peak Loop Trail,Washington,"{'lat': 46.86978, 'lng': -121.51945}",31.759,5310.822,193.8528,1,loop,3.3000000000000003
